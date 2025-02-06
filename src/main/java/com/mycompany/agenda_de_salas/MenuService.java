@@ -1,0 +1,71 @@
+package com.mycompany.agenda_de_salas;
+
+import java.util.Scanner;
+import java.util.Stack;
+
+public class MenuService {
+
+    private final Scanner scan = new Scanner(System.in);
+
+    public void exibirMenu(Menu menu) {
+        Stack<Menu> menuStack = new Stack<>();
+        menuStack.push(menu);
+
+        while (!menuStack.isEmpty()) {
+            Menu currentMenu = menuStack.peek();
+            try {
+                System.out.println("########## " + currentMenu.getTitulo() + " ##########");
+                currentMenu.getOpcoes().forEach((chave, opcao)
+                        -> System.out.println(chave + " - " + opcao.getDescricao()));
+                System.out.println("0 - Voltar");
+                System.out.println("############################\n");
+
+                String escolha = scan.nextLine();
+
+                if (escolha.equals("0")) {
+                    menuStack.pop();
+                    if (menuStack.isEmpty()) {
+                        System.out.println("Saindo do programa...");
+                        break;
+                    }
+                } else {
+                    MenuOpcao opcaoEscolhida = currentMenu.getOpcoes().get(escolha);
+                    if (opcaoEscolhida != null) {
+                        opcaoEscolhida.getAcao().run();
+                    } else {
+                        System.out.println("Opção inválida, tente novamente!");
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Erro ao processar entrada. Tente novamente. (enter)");
+                scan.reset();
+            }
+        }
+    }
+    
+        public void exibir(Menu menu) {
+        try {
+            System.out.println("########## " + menu.getTitulo() + " ##########");
+            menu.getOpcoes().forEach((chave, opcao)
+                    -> System.out.println(chave + " - " + opcao.getDescricao()));
+            System.out.println("0 - Voltar");
+            System.out.println("############################\n");
+
+            String escolha = scan.nextLine();
+
+            if (escolha.equals("0")) {
+                return;
+            } else {
+                MenuOpcao opcaoEscolhida = menu.getOpcoes().get(escolha);
+                if (opcaoEscolhida != null) {
+                    opcaoEscolhida.getAcao().run();
+                } else {
+                    System.out.println("Opção inválida, tente novamente!");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Erro ao processar entrada. Tente novamente.");
+            scan.nextLine();
+        }
+    }
+}
