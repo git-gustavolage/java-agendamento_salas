@@ -1,7 +1,7 @@
 package com.mycompany.agenda_de_salas;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -19,7 +19,10 @@ public class Agenda_de_salas {
     protected static ArrayList<Sala> salas = new ArrayList();
     protected static ArrayList<Professor> professores = new ArrayList();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {    
+        
+        boot();
+        
         Menu menuPrincipal = new Menu("Inicio");
         menuPrincipal.addOpcao("1", "Reservas", () -> menuReservas());
         menuPrincipal.addOpcao("2", "Salas", () -> menuSalas());
@@ -70,10 +73,10 @@ public class Agenda_de_salas {
         System.out.println("Selecione o minuto de fim da reseverva: : ");
         int minutoF = scan.nextInt();
 
-        LocalDateTime hora_inicio = LocalDateTime.of(ano, mes, dia, hora, minuto);
-        LocalDateTime hora_fim = LocalDateTime.of(ano, mes, dia, horaF, minutoF);
-
         try {
+            LocalDateTime hora_inicio = LocalDateTime.of(ano, mes, dia, hora, minuto);
+            LocalDateTime hora_fim = LocalDateTime.of(ano, mes, dia, horaF, minutoF);
+
             agenda.reservarSala(sala, professor, hora_inicio, hora_fim);
             System.out.println("\nRESERVA EFETUADA COM SUCESSO!\n");
         } catch (HorarioInvalidoException e) {
@@ -88,13 +91,21 @@ public class Agenda_de_salas {
 
         System.out.println("Qual reserva voce deseja cancelar? (digite o identificador)");
         String id = scan.next();
+        
+        System.out.println(id);
+        
+        try{
+            
 
         boolean sucesso = agenda.cancelarReserva(id);
 
         if (sucesso) {
             System.out.println("Reserva cancelada com sucesso!");
         } else {
-            System.err.println("[ERRO]HOUVE UM ERRO AO CANCELAR A RESERVA!");
+            System.err.println("[ERRO] HOUVE UM ERRO AO CANCELAR A RESERVA!");
+        }
+        } catch(Exception e){
+            System.out.println("Eroroororororororor " + e.getMessage());
         }
     }
     
@@ -131,7 +142,6 @@ public class Agenda_de_salas {
             cadastrarProfessor();
         }
         
-        
         while (true) {
             System.out.println("Selecione o professor: (digite o codigo identificador)");
             listarProfessores();
@@ -145,13 +155,12 @@ public class Agenda_de_salas {
                 }
             }
             if (professor == null) {
-                System.out.println("\n[ERRO] FUNCIONARIO NAO ENCONTRADO!\n");
+                System.out.println("\n[ERRO] PROFESSOR NAO ENCONTRADO!\n");
             } else {
                 return professor;
             }
         }
     }
-
     
     //funcionarios (no caso, apenas professor)
     protected static void listarProfessores() {
@@ -209,7 +218,7 @@ public class Agenda_de_salas {
     }
 
     protected static void listarSalas() {
-        System.out.println("Salas disponíveis: ");
+        System.out.println("Salas disponiveis: ");
         
         for (Sala sala : salas) {
             System.out.println("######################");
@@ -218,5 +227,52 @@ public class Agenda_de_salas {
             System.out.println("Piso: " + sala.getPiso());
             System.out.println("######################\n");
         }
+    }
+    
+    
+    
+    
+    
+    
+    
+    protected static void boot()
+    {
+        professores.add(new Professor("Leo", professor_auto_incremet++, 30));
+        professores.add(new Professor("Bibá", professor_auto_incremet++, 45));
+        professores.add(new Professor("Brenda", professor_auto_incremet++, 20));
+        professores.add(new Professor("Sheylla", professor_auto_incremet++, 100));
+        professores.add(new Professor("Tenilce", professor_auto_incremet++, 30));
+
+        // Criando salas
+        salas.add(new Sala("A", 1, 1));
+        salas.add(new Sala("A", 1, 2));
+        salas.add(new Sala("A", 1, 3));
+        salas.add(new Sala("B", 1, 4));
+        salas.add(new Sala("B", 1, 5));
+        salas.add(new Sala("B", 1, 6));
+        salas.add(new Sala("C", 2, 7));
+        salas.add(new Sala("C", 2, 8));
+        salas.add(new Sala("C", 2, 9));
+
+        // Criando reservas com datas específicas para cada sala
+        int ano = 2024, mes = 2, dia = 6, hora = 8, minuto = 0, duracao = 2;
+
+        for (int i = 0; i < salas.size(); i++) {
+            Sala sala = salas.get(i);
+            Professor professor = professores.get(i % professores.size()); // Distribuição cíclica
+
+            LocalDateTime horaInicio = LocalDateTime.of(ano, mes, dia + i, hora, minuto); // Data diferente por sala
+            LocalDateTime horaFim = horaInicio.plusHours(duracao);
+
+            try {
+                agenda.reservarSala(sala, professor, horaInicio, horaFim);
+                
+            } catch (HorarioInvalidoException e) {
+                System.out.println("erro");
+                System.exit(dia);
+            }
+        }
+        
+        
     }
 }
