@@ -46,9 +46,7 @@ public class Agenda {
 
         for (Registro registro : this.registros) {
             if (registro.getId().equalsIgnoreCase(id)) {
-                System.out.println("ENCONTROU REGISTRO PARA SER DELETADO");
                 this.registros.remove(registro);
-                System.out.println("DELETOU O REGISTRO!");
                 deletado = true;
                 break;
             }
