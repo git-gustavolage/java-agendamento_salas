@@ -25,7 +25,6 @@ public class MenuService {
                 if (escolha.equals("0")) {
                     menuStack.pop();
                     if (menuStack.isEmpty()) {
-                        System.out.println("Saindo do programa...");
                         break;
                     }
                 } else {
@@ -33,16 +32,17 @@ public class MenuService {
                     if (opcaoEscolhida != null) {
                         opcaoEscolhida.getAcao().run();
                     } else {
-                        System.err.println("[ERRO ] OPÇÃO INVÁLIDA! TENTE NOVAMENTE.");
+                        System.err.println("[ERRO] OPCAO INVALIDA! TENTE NOVAMENTE.");
                     }
                 }
             } catch (Exception e) {
                 System.err.println("[ERRO] ERRO AO PROCESSAR ENTRADA. TENTE NOVAMENTE.");
+                scan.nextLine();
             }
         }
     }
-    
-        public void exibir(Menu menu) {
+
+    public void exibir(Menu menu) {
         try {
             System.out.println("########## " + menu.getTitulo() + " ##########");
             menu.getOpcoes().forEach((chave, opcao)
@@ -57,11 +57,11 @@ public class MenuService {
                 if (opcaoEscolhida != null) {
                     opcaoEscolhida.getAcao().run();
                 } else {
-                    System.out.println("Opção inválida, tente novamente!");
+                    System.out.println("[ERRO] OPCAO INVALIDA! TENTE NOVAMENTE.");
                 }
             }
         } catch (Exception e) {
-            System.out.println("Erro ao processar entrada. Tente novamente.");
+            System.out.println("[ERRO] ERRO AO PROCESSAR ENTRADA. TENTE NOVAMENTE.");
             scan.nextLine();
         }
     }
