@@ -59,6 +59,7 @@ public class Agenda {
 
         for (Registro registro : registros) {
             if (registro.getSala().getNumero() == sala.getNumero()) {
+                System.out.println("VERIFICANDO SE OS HORARIOS PARA ESSTAS SALAS SAO COMPATIVEIS");
                 LocalDateTime horarioCadastradoInicio = registro.getHorario_inicio();
                 LocalDateTime horarioCadastradoFim = registro.getHorario_fim();
 

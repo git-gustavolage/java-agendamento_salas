@@ -21,6 +21,7 @@ public class MenuService {
                 System.out.println("############################\n");
 
                 String escolha = scan.nextLine();
+                scan.reset();
 
                 if (escolha.equals("0")) {
                     menuStack.pop();

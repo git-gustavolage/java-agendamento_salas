@@ -8,24 +8,21 @@ import java.util.Scanner;
 
 public class Agenda_de_salas {
 
-    //variáveis de controle de registros (id)
-    private static int professor_auto_incremet = 1;
-
     protected static Scanner scan = new Scanner(System.in);
     private static final MenuService menuService = new MenuService();
+    private static final ProfessorService professorService = new ProfessorService();
 
     protected static Agenda agenda = new Agenda();
     protected static ArrayList<Sala> salas = new ArrayList();
-    protected static ArrayList<Professor> professores = new ArrayList();
+
 
     public static void main(String[] args) {
-
         boot();
 
         Menu menuPrincipal = new Menu("Inicio");
         menuPrincipal.addOpcao("1", "Reservas", () -> menuReservas());
         menuPrincipal.addOpcao("2", "Salas", () -> menuSalas());
-        menuPrincipal.addOpcao("3", "Funcionarios", () -> menuFuncionarios());
+        menuPrincipal.addOpcao("3", "Professores", () -> professorService.menu());
 
         menuService.exibirMenu(menuPrincipal);
         System.out.println("Saindo do programa...");
@@ -39,13 +36,6 @@ public class Agenda_de_salas {
         menuService.exibirMenu(reservas);
     }
 
-    protected static void menuFuncionarios() {
-        Menu funcionarios = new Menu("Funcionarios");
-        funcionarios.addOpcao("1", "cadastrar", () -> cadastrarProfessor());
-        funcionarios.addOpcao("2", "Listar", () -> listarProfessores());
-        menuService.exibirMenu(funcionarios);
-    }
-
     protected static void menuSalas() {
         Menu salasM = new Menu("Salas");
         salasM.addOpcao("1", "Cadastrar", () -> cadastrarSala());
@@ -55,7 +45,7 @@ public class Agenda_de_salas {
 
     protected static void cadastrarReserva() {
         Sala sala = selecionarSala();
-        Professor professor = selecionarProfessor();
+        Professor professor = professorService.selecionarProfessor();
 
         LocalDate dataAtual = LocalDate.now();
         int ano = Integer.parseInt(dataAtual.toString().split("-")[0]);
@@ -102,7 +92,7 @@ public class Agenda_de_salas {
                 System.err.println("[ERRO] HOUVE UM ERRO AO CANCELAR A RESERVA!");
             }
         } catch (Exception e) {
-            System.out.println("Eroroororororororor " + e.getMessage());
+            System.out.println("[ERRO] " + e.getMessage());
         }
     }
 
@@ -131,59 +121,6 @@ public class Agenda_de_salas {
                 return sala;
             }
         }
-    }
-
-    protected static Professor selecionarProfessor() {
-        if (professores.size() <= 0) {
-            System.out.println("Nenhum professor foi cadastrado ainda!");
-            cadastrarProfessor();
-        }
-
-        while (true) {
-            System.out.println("Selecione o professor: (digite o codigo identificador)");
-            listarProfessores();
-            int codigo = scan.nextInt();
-            scan.nextLine();
-            Professor professor = null;
-
-            for (Professor p : professores) {
-                if (p.getCodigo_identificador() == codigo) {
-                    professor = p;
-                }
-            }
-            if (professor == null) {
-                System.out.println("\n[ERRO] PROFESSOR NAO ENCONTRADO!\n");
-            } else {
-                return professor;
-            }
-        }
-    }
-
-    //funcionarios (no caso, apenas professor)
-    protected static void listarProfessores() {
-        for (Professor p : professores) {
-            System.out.println("######################");
-            System.out.println("Codigo identificador: " + p.getCodigo_identificador());
-            System.out.println("Nome: " + p.getNome());
-            System.out.println("Carga horaria semanal: " + p.getCarga_horaria());
-            System.out.println("######################\n");
-        }
-    }
-
-    protected static void cadastrarProfessor() {
-        System.out.println("\nCadastra professor: ");
-
-        System.out.println("Digite o nome do professor: ");
-        String nome = scan.nextLine();
-
-        System.out.println("Digite a carga horaria do professor: (double)");
-        double carga_horaria = scan.nextDouble();
-        scan.nextLine();
-
-        Professor p = new Professor(nome, professor_auto_incremet++, carga_horaria);
-        professores.add(p);
-        System.out.println("\nPROFESSOR CADASTRADO COM SUCESSO!");
-        scan.reset();
     }
 
     //salas   
@@ -227,11 +164,9 @@ public class Agenda_de_salas {
     }
 
     protected static void boot() {
-        professores.add(new Professor("Leo", professor_auto_incremet++, 30));
-        professores.add(new Professor("Bibá", professor_auto_incremet++, 45));
-        professores.add(new Professor("Brenda", professor_auto_incremet++, 20));
-        professores.add(new Professor("Sheylla", professor_auto_incremet++, 100));
-        professores.add(new Professor("Tenilce", professor_auto_incremet++, 30));
+        
+        professorService.boot();
+
 
         salas.add(new Sala("A", 1, 1));
         salas.add(new Sala("A", 1, 2));
@@ -247,7 +182,7 @@ public class Agenda_de_salas {
 
         for (int i = 0; i < salas.size(); i++) {
             Sala sala = salas.get(i);
-            Professor professor = professores.get(i % professores.size());
+            Professor professor = professorService.getProfessor(i % professorService.getQuantidadeProfessores());
 
             LocalDateTime horaInicio = LocalDateTime.of(ano, mes, dia + i, hora, minuto);
             LocalDateTime horaFim = horaInicio.plusHours(duracao);
