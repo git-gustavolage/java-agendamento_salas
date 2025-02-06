@@ -1,7 +1,5 @@
 package com.mycompany.agenda_de_salas;
 
-import com.mycompany.agenda_de_salas.Funcionario;
-
 public class Professor extends Funcionario{
     private double carga_horaria;
 

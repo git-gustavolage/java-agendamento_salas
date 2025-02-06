@@ -33,12 +33,11 @@ public class MenuService {
                     if (opcaoEscolhida != null) {
                         opcaoEscolhida.getAcao().run();
                     } else {
-                        System.out.println("Opção inválida, tente novamente!");
+                        System.err.println("[ERRO ] OPÇÃO INVÁLIDA! TENTE NOVAMENTE.");
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Erro ao processar entrada. Tente novamente. (enter)");
-                scan.reset();
+                System.err.println("[ERRO] ERRO AO PROCESSAR ENTRADA. TENTE NOVAMENTE.");
             }
         }
     }
@@ -53,9 +52,7 @@ public class MenuService {
 
             String escolha = scan.nextLine();
 
-            if (escolha.equals("0")) {
-                return;
-            } else {
+            if (!escolha.equals("0")) {
                 MenuOpcao opcaoEscolhida = menu.getOpcoes().get(escolha);
                 if (opcaoEscolhida != null) {
                     opcaoEscolhida.getAcao().run();
