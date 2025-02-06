@@ -63,8 +63,6 @@ public class Agenda_de_salas {
             System.out.println("\nRESERVA EFETUADA COM SUCESSO!\n");
         } catch (HorarioInvalidoException e) {
             System.out.println(e.getMessage());
-            System.out.println("TENTE NOVAMENTE: ");
-            cadastrarReserva();
         }
     }
 
