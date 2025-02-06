@@ -2,8 +2,6 @@ package com.mycompany.agenda_de_salas;
 
 import java.time.LocalDateTime;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Agenda_de_salas {
@@ -11,23 +9,24 @@ public class Agenda_de_salas {
     protected static Scanner scan = new Scanner(System.in);
     private static final MenuService menuService = new MenuService();
     private static final ProfessorService professorService = new ProfessorService();
+    private static final SalaService salaService = new SalaService();
 
     protected static Agenda agenda = new Agenda();
-    protected static ArrayList<Sala> salas = new ArrayList();
 
-
+    
     public static void main(String[] args) {
         boot();
 
         Menu menuPrincipal = new Menu("Inicio");
         menuPrincipal.addOpcao("1", "Reservas", () -> menuReservas());
-        menuPrincipal.addOpcao("2", "Salas", () -> menuSalas());
+        menuPrincipal.addOpcao("2", "Salas", () -> salaService.menu());
         menuPrincipal.addOpcao("3", "Professores", () -> professorService.menu());
 
         menuService.exibirMenu(menuPrincipal);
         System.out.println("Saindo do programa...");
     }
 
+    
     protected static void menuReservas() {
         Menu reservas = new Menu("Reservas");
         reservas.addOpcao("1", "Cadastrar", () -> cadastrarReserva());
@@ -36,15 +35,9 @@ public class Agenda_de_salas {
         menuService.exibirMenu(reservas);
     }
 
-    protected static void menuSalas() {
-        Menu salasM = new Menu("Salas");
-        salasM.addOpcao("1", "Cadastrar", () -> cadastrarSala());
-        salasM.addOpcao("2", "Listar", () -> listarSalas());
-        menuService.exibirMenu(salasM);
-    }
-
+    
     protected static void cadastrarReserva() {
-        Sala sala = selecionarSala();
+        Sala sala = salaService.selecionarSala();
         Professor professor = professorService.selecionarProfessor();
 
         LocalDate dataAtual = LocalDate.now();
@@ -75,6 +68,7 @@ public class Agenda_de_salas {
         }
     }
 
+    
     protected static void cancelarReserva() {
         agenda.conferirReservas();
 
@@ -96,92 +90,16 @@ public class Agenda_de_salas {
         }
     }
 
-    protected static Sala selecionarSala() {
-        if (salas.size() <= 0) {
-            System.out.println("Nenhuma sala foi cadastrada ainda!");
-            cadastrarSala();
-        }
-
-        while (true) {
-            System.out.println("Selecione a sala: (digite o numero da sala)");
-            listarSalas();
-            int numero_sala = scan.nextInt();
-            scan.nextLine();
-            Sala sala = null;
-
-            for (Sala s : salas) {
-                if (s.getNumero() == numero_sala) {
-                    sala = s;
-                }
-            }
-
-            if (sala == null) {
-                System.err.println("\n[ERRO] SALA NAO ENCONTRADA!\n");
-            } else {
-                return sala;
-            }
-        }
-    }
-
-    //salas   
-    protected static void cadastrarSala() {
-        System.out.println("\nCadastrar Sala:");
-
-        while (true) {
-            try {
-                System.out.println("Digite o bloco da sala: ");
-                String bloco = scan.next();
-
-                System.out.println("Digite o andar da sala: (numero inteiro)");
-                int piso = scan.nextInt();
-                scan.nextLine();
-
-                System.out.println("Digite o numero da sala: (numero inteiro)");
-                int numero = scan.nextInt();
-                scan.nextLine();
-
-                Sala sala = new Sala(bloco, piso, numero);
-                salas.add(sala);
-                System.out.println("\nSALA CADASTRADA COM SUCESSO!\n");
-                break;
-            } catch (InputMismatchException e) {
-                System.err.println("[ERRO] Entrada invalida. Tente novamente.");
-                scan.nextLine();
-            }
-        }
-    }
-
-    protected static void listarSalas() {
-        System.out.println("Salas disponiveis: ");
-
-        for (Sala sala : salas) {
-            System.out.println("######################");
-            System.out.println("Sala: " + sala.getNumero());
-            System.out.println("Bloco: " + sala.getBloco());
-            System.out.println("Piso: " + sala.getPiso());
-            System.out.println("######################\n");
-        }
-    }
-
-    protected static void boot() {
+    
+    private static void boot() {
         
         professorService.boot();
+        salaService.boot();
 
+        int ano = 2025, mes = 2, dia = 6, hora = 8, minuto = 0, duracao = 2;
 
-        salas.add(new Sala("A", 1, 1));
-        salas.add(new Sala("A", 1, 2));
-        salas.add(new Sala("A", 1, 3));
-        salas.add(new Sala("B", 1, 4));
-        salas.add(new Sala("B", 1, 5));
-        salas.add(new Sala("B", 1, 6));
-        salas.add(new Sala("C", 2, 7));
-        salas.add(new Sala("C", 2, 8));
-        salas.add(new Sala("C", 2, 9));
-
-        int ano = 2024, mes = 2, dia = 6, hora = 8, minuto = 0, duracao = 2;
-
-        for (int i = 0; i < salas.size(); i++) {
-            Sala sala = salas.get(i);
+        for (int i = 0; i < salaService.getQuantidadeSalas(); i++) {
+            Sala sala = salaService.getSala(i);
             Professor professor = professorService.getProfessor(i % professorService.getQuantidadeProfessores());
 
             LocalDateTime horaInicio = LocalDateTime.of(ano, mes, dia + i, hora, minuto);
@@ -191,7 +109,7 @@ public class Agenda_de_salas {
                 agenda.reservarSala(sala, professor, horaInicio, horaFim);
 
             } catch (HorarioInvalidoException e) {
-                System.out.println("erro");
+                System.out.println("[BOOT ERROR]");
                 System.exit(dia);
             }
         }

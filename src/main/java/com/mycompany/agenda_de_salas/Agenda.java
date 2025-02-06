@@ -64,7 +64,11 @@ public class Agenda {
                 LocalDateTime horarioCadastradoFim = registro.getHorario_fim();
 
                 boolean horariosConflitam = horario_inicio.isBefore(horarioCadastradoFim) && horario_fim.isAfter(horarioCadastradoInicio);
-
+                System.out.println("horarios conflitam? " + horariosConflitam);
+                System.out.println("horariocadastrado inicio: " + horarioCadastradoInicio.toString());
+                System.out.println("horariocadastrado fim:" + horarioCadastradoFim.toString());
+                System.out.println("novo horario inicio:" + horario_inicio.toString());
+                System.out.println("novo horario fim:" + horario_fim.toString());
 
                 if (horariosConflitam) {
                     return false;

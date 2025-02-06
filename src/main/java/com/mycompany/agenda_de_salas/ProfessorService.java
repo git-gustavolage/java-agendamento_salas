@@ -4,19 +4,28 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ProfessorService {
-
     //variáveis de controle de registros (id)
-    private int professor_auto_incremet;
-    protected ArrayList<Professor> professores;
-    protected Scanner scan;
-    private static final MenuService menuService = new MenuService();
+    protected int professor_auto_incremet;
+    
+    protected final ArrayList<Professor> professores;
+    protected final Scanner scan;
+    protected final MenuService menuService;
 
     public ProfessorService() {
         this.professor_auto_incremet = 1;
         this.professores = new ArrayList();
         this.scan = new Scanner(System.in);
+        this.menuService = new MenuService();
     }
 
+    public void boot() {
+        professores.add(new Professor("Leo", professor_auto_incremet++, 30));
+        professores.add(new Professor("Bibá", professor_auto_incremet++, 45));
+        professores.add(new Professor("Brenda", professor_auto_incremet++, 20));
+        professores.add(new Professor("Sheylla", professor_auto_incremet++, 100));
+        professores.add(new Professor("Tenilce", professor_auto_incremet++, 30));
+    }
+    
     public void menu() {
         Menu funcionarios = new Menu("Funcionarios");
         funcionarios.addOpcao("1", "Cadastrar", () -> cadastrarProfessor());
@@ -80,15 +89,8 @@ public class ProfessorService {
         return professores.get(index);
     }
 
-    public void boot() {
-        professores.add(new Professor("Leo", professor_auto_incremet++, 30));
-        professores.add(new Professor("Bibá", professor_auto_incremet++, 45));
-        professores.add(new Professor("Brenda", professor_auto_incremet++, 20));
-        professores.add(new Professor("Sheylla", professor_auto_incremet++, 100));
-        professores.add(new Professor("Tenilce", professor_auto_incremet++, 30));
-    }
-
     public int getQuantidadeProfessores(){
         return professores.size();
     }
+    
 }
