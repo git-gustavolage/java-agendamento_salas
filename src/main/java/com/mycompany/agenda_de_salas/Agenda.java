@@ -1,5 +1,6 @@
 package com.mycompany.agenda_de_salas;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -20,13 +21,30 @@ public class Agenda {
             throw new HorarioInvalidoException("\n[ERRO]: O HORARIO SELECIONADO ESTA INDIPONIVEL!\n\n");
         }
 
+        if (!this.temDiferencaMinima(horario_inicio, horario_fim, 50)) {
+            throw new HorarioInvalidoException("\n[ERRO]: A RESERVA DEVE SER DE, NO >MINIMO< 50 MINUTOS!\n\n");
+        }
+
         registros.add(r);
         return true;
     }
 
-    public void conferirReservas() {
+    public boolean removerProProfessorId(int id) {
         
-        if(registros.size() <= 0){
+        ArrayList<Registro> elemntosParaRemover = new ArrayList<>();
+        
+        for (Registro registro : registros) {
+            if (registro.getFuncionario().getCodigo_identificador() == id) {
+                elemntosParaRemover.add(registro);
+            }
+        }
+        
+        return registros.removeAll(elemntosParaRemover);
+    }
+
+    public void conferirReservas() {
+
+        if (registros.size() <= 0) {
             System.out.println("NENHUMA RESERVA FOI FEITA AINDA!");
             return;
         }
@@ -53,6 +71,11 @@ public class Agenda {
         }
 
         return deletado;
+    }
+
+    private boolean temDiferencaMinima(LocalDateTime inicio, LocalDateTime fim, long minutosMinimos) {
+        Duration duracao = Duration.between(inicio, fim);
+        return duracao.toMinutes() >= minutosMinimos;
     }
 
     private boolean isHorarioDisponivel(Sala sala, LocalDateTime horario_inicio, LocalDateTime horario_fim) {

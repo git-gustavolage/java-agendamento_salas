@@ -20,7 +20,7 @@ public class Agenda_de_salas {
         Menu menuPrincipal = new Menu("Inicio");
         menuPrincipal.addOpcao("1", "Reservas", () -> menuReservas());
         menuPrincipal.addOpcao("2", "Salas", () -> salaService.menu());
-        menuPrincipal.addOpcao("3", "Professores", () -> professorService.menu());
+        menuPrincipal.addOpcao("3", "Professores", () -> professorService.menu(agenda));
 
         menuService.exibirMenu(menuPrincipal);
         System.out.println("Saindo do programa...");

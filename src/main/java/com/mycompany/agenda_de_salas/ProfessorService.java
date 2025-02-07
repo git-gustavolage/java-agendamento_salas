@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ProfessorService {
+
     //variáveis de controle de registros (id)
     protected int professor_auto_incremet;
-    
+
     protected final ArrayList<Professor> professores;
     protected final Scanner scan;
     protected final MenuService menuService;
@@ -25,11 +26,12 @@ public class ProfessorService {
         professores.add(new Professor("Sheylla", professor_auto_incremet++, 100));
         professores.add(new Professor("Tenilce", professor_auto_incremet++, 30));
     }
-    
-    public void menu() {
+
+    public void menu(Agenda agenda) {
         Menu funcionarios = new Menu("Funcionarios");
         funcionarios.addOpcao("1", "Cadastrar", () -> cadastrarProfessor());
         funcionarios.addOpcao("2", "Listar", () -> listarProfessores());
+        funcionarios.addOpcao("3", "Remover", () -> remover(agenda));
         menuService.exibirMenu(funcionarios);
     }
 
@@ -59,6 +61,35 @@ public class ProfessorService {
         scan.reset();
     }
 
+    public void remover(Agenda agenda) {
+        boolean professor_encontrado = false;
+
+        this.listarProfessores();
+        System.out.println("Digite o codigo identificador do professor (numero inteiro)");
+
+        int id = scan.nextInt();
+
+        for (Professor prof : professores) {
+            if (prof.getCodigo_identificador() == id) {
+                professor_encontrado = true;
+                boolean sucesso = professores.remove(prof);
+
+                if (!sucesso) {
+                    System.out.println("[ERRO] HOUVE UM ERRO AO REMOVER O PROFESSOR: " + prof.getNome());
+                }
+
+                agenda.removerProProfessorId(prof.getCodigo_identificador());
+
+                System.out.println("\nPROFESSOR REMOVIDO COM SUCESSO!\n");
+                break;
+            }
+        }
+
+        if (!professor_encontrado) {
+            System.out.println("[ERRO] NENHUM PROFESSOR COM ESTE CODIGO FOI ENCONTRADO");
+        }
+    }
+
     public Professor selecionarProfessor() {
         if (professores.size() <= 0) {
             System.out.println("Nenhum professor foi cadastrado ainda!");
@@ -84,13 +115,13 @@ public class ProfessorService {
             }
         }
     }
-    
-    public Professor getProfessor(int index){
+
+    public Professor getProfessor(int index) {
         return professores.get(index);
     }
 
-    public int getQuantidadeProfessores(){
+    public int getQuantidadeProfessores() {
         return professores.size();
     }
-    
+
 }
